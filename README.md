@@ -16,7 +16,7 @@ A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ult
 ![Crikit Designer Circuit](circuit_image.png)
 *Crikit Designer circuit — Arduino Uno, HC-SR04, servo motor, .*
 
-![Physical Setup](projectpicture.jpeg)
+![Physical Setup](project_picture.jpeg)
 *The circuit built and tested on real hardware.*
 
 ---
