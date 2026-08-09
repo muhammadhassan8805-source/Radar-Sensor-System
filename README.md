@@ -7,7 +7,7 @@
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
 
-A servo-driven ultrasonic radar system built with an **Arduino Uno**. An **HC-SR04** ultrasonic sensor is mounted on a **servo motor** to sweep across a 180° field of view, measuring distance at each angle. When an object is detected within range, a **buzzer** and **LED** trigger a real-time proximity alert. Designed, wired, and simulated in **Tinkercad**.
+A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ultrasonic sensor is mounted on a servo motor to sweep across a 180° field of view, measuring distance at each angle to detect nearby objects across its sweep path. Designed, wired, and simulated using Cricut Design Space (or your preferred designer layout).
 
 ---
 
@@ -16,7 +16,7 @@ A servo-driven ultrasonic radar system built with an **Arduino Uno**. An **HC-SR
 ![Crikit Designer Circuit](circuit_image.png)
 *Crikit Designer circuit — Arduino Uno, HC-SR04, servo motor, .*
 
-![Physical Setup](project_picture.jpeg)
+![Physical Setup](projectpicture.jpeg)
 *The circuit built and tested on real hardware.*
 
 ---
@@ -58,10 +58,7 @@ A servo-driven ultrasonic radar system built with an **Arduino Uno**. An **HC-SR
 
 ---
 
-## 🔌 Circuit Diagram & Pin Connections
-
-![Schematic Diagram](schematic.png)
-*Auto-generated schematic view from Tinkercad.*
+## 🔌 Pin Connections
 
 | Component        | Pin  | Arduino Pin |
 |-------------------|------|-------------|
@@ -69,26 +66,23 @@ A servo-driven ultrasonic radar system built with an **Arduino Uno**. An **HC-SR
 | HC-SR04            | GND  | GND         |
 | HC-SR04            | TRIG | D10         |
 | HC-SR04            | ECHO | D11         |
-| Servo Motor         | PWR (red)   | 5V   |
-| Servo Motor         | GND (brown) | GND  |
-| Servo Motor         | SIG (orange)| D12  |
-| Buzzer               | +    | D8          |
-| Buzzer               | –    | GND         |
-| LED (via 220Ω resistor) | Anode | D7     |
-| LED                 | Cathode | GND       |
+| Servo Motor         | PWR         | 5V   |
+| Servo Motor         | GND         | GND  |
+| Servo Motor         | SIG         | D12  |
+
 
 ---
 
 ## 🚀 Getting Started
 
-### Option 1 — Simulate on Crikit Designer
+### Step 1 — Simulate on Crikit Designer
 1. Open the project on Crikit Designer:`
 2. Click **Start Simulation** to see the radar sweep and proximity alerts in action.
 
-### Option 2 — Build the Physical Circuit
-1. Wire the components on a breadboard as shown in the [circuit diagram](#-circuit-diagram--pin-connections) above.
+### Step 2 — Build the Physical Circuit
+1. Connect all the Components as shown in the circuit image above.
 2. Connect the Arduino Uno to your computer via USB.
-3. Open `radar_code.ino` in the Arduino IDE.
+3. Open `Arduino Code` in the Arduino IDE.
 4. Select **Tools > Board > Arduino Uno** and the correct COM port.
 5. Click **Upload**.
 6. Open the **Serial Monitor** (or **Serial Plotter**) at 9600 baud to view live distance readings.
@@ -97,10 +91,10 @@ A servo-driven ultrasonic radar system built with an **Arduino Uno**. An **HC-SR
 
 ## 🎥 Demo — Detection in Action
 
-| No Object in Range | Object Detected |
-|:---:|:---:|
-| ![Without Object](without_object.png) | ![With Object](with_object.png) |
-| Idle state — LED off, buzzer silent | Object within threshold — LED + buzzer alert active |
+| Object Detected |
+|:---:|
+| ![With Object](RadarScreen.jpeg) |
+| Object within threshold — LED + buzzer alert active |
 
 
 
