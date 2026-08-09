@@ -4,7 +4,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Arduino%20Uno-00979D?logo=arduino&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Processing%20-00979D?logo=arduino&logoColor=white)
 ![Tool](https://img.shields.io/badge/Simulated%20on-cirkitdesigner-1497FE)
-![Language](https://img.shields.io/badge/Language-C%2B%2B-blue)
+![Language](https://img.shields.io/badge/Language-JAVA-blue)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
 
