@@ -1,0 +1,68 @@
+#include <Servo.h>
+
+// Pin definitions
+const int SERVO_PIN = 12;
+const int TRIG_PIN  = 10;
+const int ECHO_PIN  = 11;
+
+Servo radarServo;
+
+void setup() {
+  Serial.begin(9600);
+  
+  // Configure Ultrasonic Sensor pins
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  
+  // Attach Servo
+  radarServo.attach(SERVO_PIN);
+}
+
+void loop() {
+  // Sweep from 15 degrees to 165 degrees
+  for (int angle = 15; angle <= 165; angle++) {
+    radarServo.write(angle);
+    delay(30); // Pause to let the servo settle
+    
+    int distance = getDistance();
+    
+    // Output string format: "angle,distance."
+    Serial.print(angle);
+    Serial.print(",");
+    Serial.print(distance);
+    Serial.print(".");
+  }
+  
+  // Sweep back from 165 degrees to 15 degrees
+  for (int angle = 165; angle >= 15; angle--) {
+    radarServo.write(angle);
+    delay(30);
+    
+    int distance = getDistance();
+    
+    Serial.print(angle);
+    Serial.print(",");
+    Serial.print(distance);
+    Serial.print(".");
+  }
+}
+
+// Function to calculate distance using HC-SR04
+int getDistance() {
+  // Clear the trigger pin
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  
+  // Send 10 microsecond pulse to TRIG
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  
+  // Read ECHO pulse duration (30ms timeout = ~5m max range)
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+  
+  // Calculate distance in cm (Speed of sound = 0.034 cm/us)
+  int distance = duration * 0.034 / 2;
+  
+  return distance;
+}
