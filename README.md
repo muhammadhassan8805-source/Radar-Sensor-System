@@ -81,11 +81,17 @@ A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ult
 
 ### Step 2 — Build the Physical Circuit
 1. Connect all the Components as shown in the circuit image above.
-2. Connect the Arduino Uno to your computer via USB.
-3. Open `Arduino Code` in the Arduino IDE.
-4. Select **Tools > Board > Arduino Uno** and the correct COM port.
-5. Click **Upload**.
-6. Open the **Serial Monitor** (or **Serial Plotter**) at 9600 baud to view live distance readings.
+### Step 3 - Open Arduino IDE
+3. Connect the Arduino Uno to your computer via USB.
+4. Open `Arduino Code` in the Arduino IDE.
+5. Select **Tools > Board > Arduino Uno** and the correct COM port.
+6. Click **Upload**.
+
+### Step 4 - Open Processing
+1. Open the Processing IDE on your computer.
+2. Open the Radar_Visualization.pde sketch file.
+3. Verify that the COM port in the code matches your Arduino's COM port (e.g., COM3 or ttyUSB0).
+4.Click the Run button (play icon) to launch the graphical radar interface and view real-time sweep data.
 
 ---
 
@@ -94,7 +100,7 @@ A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ult
 | Object Detected |
 |:---:|
 | ![With Object](RadarScreen.jpeg) |
-| Object within threshold — LED + buzzer alert active |
+| Object within threshold  |
 
 
 
