@@ -1,0 +1,307 @@
+import processing.serial.*;
+
+Serial myPort;
+
+String data = "";
+int iAngle = 0;
+int iDistance = 0;
+
+int maxAngle = 180;
+int[] distanceMap = new int[maxAngle + 1];
+int[] fadeMap = new int[maxAngle + 1];
+
+// Color Palette
+color CYAN        = color(0, 240, 255);
+color CYAN_GLOW   = color(0, 200, 255, 30);
+color RED         = color(255, 40, 80);
+color RED_ALERT   = color(255, 20, 60, 220);
+color GREEN       = color(0, 255, 150);
+color DARK_BG     = color(6, 10, 16);
+
+void setup() {
+  size(1366, 768);
+  smooth(8);
+  
+  // Serial Connection
+  myPort = new Serial(this, "COM4", 9600);
+  myPort.bufferUntil('.');
+  
+  // Clear distance/fade arrays
+  for (int i = 0; i <= maxAngle; i++) {
+    distanceMap[i] = 0;
+    fadeMap[i] = 0;
+  }
+}
+
+void draw() {
+  // Persistence fade effect
+  noStroke();
+  fill(DARK_BG, 40);
+  rect(0, 0, width, height);
+
+  // Decay scan trail memory
+  for (int i = 0; i <= maxAngle; i++) {
+    if (fadeMap[i] > 0) fadeMap[i] -= 2;
+  }
+
+  drawCyberGrid();
+  drawCompassRing();
+  drawRadarScope();
+  drawSweepTrail();
+  drawThreatTargets();
+  drawPrimarySweep();
+  drawTelemetryHUD();
+  
+  if (iDistance > 0 && iDistance < 40) {
+    drawThreatAlertBanner();
+  }
+}
+
+void serialEvent(Serial myPort) {
+  data = myPort.readStringUntil('.');
+  if (data != null) {
+    data = data.substring(0, data.length() - 1);
+    int sep = data.indexOf(",");
+    
+    if (sep > 0) {
+      try {
+        int parsedAngle = int(trim(data.substring(0, sep)));
+        int parsedDist  = int(trim(data.substring(sep + 1)));
+        
+        if (parsedAngle >= 0 && parsedAngle <= maxAngle) {
+          iAngle = parsedAngle;
+          iDistance = parsedDist;
+          
+          distanceMap[iAngle] = iDistance;
+          fadeMap[iAngle] = 255; // High brightness on active detection
+        }
+      } catch (Exception e) {}
+    }
+  }
+}
+
+// Background Cyber Grid & Vignette
+void drawCyberGrid() {
+  stroke(CYAN, 15);
+  strokeWeight(1);
+  for (int x = 0; x < width; x += 40) line(x, 0, x, height);
+  for (int y = 0; y < height; y += 40) line(0, y, width, y);
+}
+
+// Outer Tactical Compass Ring
+void drawCompassRing() {
+  pushMatrix();
+  translate(width / 2, height - 70);
+  float R = width * 0.43;
+  
+  // Outer Glow Ring
+  noFill();
+  stroke(CYAN, 40);
+  strokeWeight(6);
+  arc(0, 0, (R + 15) * 2, (R + 15) * 2, PI, TWO_PI);
+  
+  for (int a = 0; a <= 180; a += 5) {
+    float rad = radians(a);
+    float len = (a % 15 == 0) ? 18 : 8;
+    
+    stroke(CYAN, (a % 15 == 0) ? 220 : 90);
+    strokeWeight((a % 15 == 0) ? 2 : 1);
+    
+    line((R + len) * cos(rad), -(R + len) * sin(rad), R * cos(rad), -R * sin(rad));
+  }
+  popMatrix();
+}
+
+// Concentric Scope Rings and Degree Rays
+void drawRadarScope() {
+  pushMatrix();
+  translate(width / 2, height - 70);
+  float maxR = width * 0.42;
+  
+  noFill();
+  
+  // Distance Rings
+  for (int r = 1; r <= 4; r++) {
+    float radius = maxR * (r / 4.0);
+    stroke(CYAN, 70);
+    strokeWeight(1.5);
+    arc(0, 0, radius * 2, radius * 2, PI, TWO_PI);
+    
+    // Label Background
+    fill(DARK_BG, 200);
+    noStroke();
+    rect(radius - 15, -18, 38, 16, 3);
+    
+    fill(CYAN, 220);
+    textSize(11);
+    textAlign(CENTER);
+    text((r * 10) + " CM", radius + 4, -6);
+    noFill();
+  }
+  
+  // Degree Lines & Text
+  for (int a = 0; a <= 180; a += 30) {
+    float rad = radians(a);
+    stroke(CYAN, 50);
+    strokeWeight(1);
+    line(0, 0, -maxR * cos(rad), -maxR * sin(rad));
+    
+    fill(CYAN, 220);
+    textSize(12);
+    textAlign(CENTER);
+    text(a + "°", -(maxR + 32) * cos(rad), -(maxR + 32) * sin(rad));
+  }
+  popMatrix();
+}
+
+// Sweeping Gradient Fan Trail
+void drawSweepTrail() {
+  pushMatrix();
+  translate(width / 2, height - 70);
+  float maxR = width * 0.42;
+  
+  for (int i = 0; i < 30; i++) {
+    int trailAngle = iAngle - i;
+    if (trailAngle >= 0 && trailAngle <= maxAngle) {
+      float rad = radians(trailAngle);
+      float alpha = map(i, 0, 30, 120, 0);
+      
+      stroke(CYAN, alpha);
+      strokeWeight(2);
+      line(0, 0, maxR * cos(rad), -maxR * sin(rad));
+    }
+  }
+  popMatrix();
+}
+
+// Threat Target Locking and Crosshairs
+void drawThreatTargets() {
+  pushMatrix();
+  translate(width / 2, height - 70);
+  float maxR = width * 0.42;
+
+  for (int a = 0; a <= maxAngle; a++) {
+    int d = distanceMap[a];
+    int alpha = fadeMap[a];
+    
+    if (d > 0 && d < 40 && alpha > 0) {
+      float rad = radians(a);
+      float pixD = map(d, 0, 40, 0, maxR);
+      float px = pixD * cos(rad);
+      float py = -pixD * sin(rad);
+      
+      // Vector line from center to threat
+      stroke(RED, alpha * 0.5);
+      strokeWeight(1);
+      line(0, 0, px, py);
+      
+      // Pulsing Box & Reticle
+      noFill();
+      stroke(RED, alpha);
+      strokeWeight(1.8);
+      
+      float pulse = sin(frameCount * 0.1) * 3;
+      rect(px - 10 - pulse/2, py - 10 - pulse/2, 20 + pulse, 20 + pulse);
+      
+      // Target Crosshairs
+      line(px - 15, py, px + 15, py);
+      line(px, py - 15, px, py + 15);
+      
+      // Blip Point
+      fill(RED, alpha);
+      noStroke();
+      ellipse(px, py, 6, 6);
+    }
+  }
+  popMatrix();
+}
+
+// Active Scanning Line
+void drawPrimarySweep() {
+  pushMatrix();
+  translate(width / 2, height - 70);
+  float maxR = width * 0.42;
+  float rad = radians(iAngle);
+  
+  // Beam Line
+  stroke(CYAN, 255);
+  strokeWeight(3);
+  line(0, 0, maxR * cos(rad), -maxR * sin(rad));
+  
+  // Beam Tip Glow
+  fill(CYAN);
+  noStroke();
+  ellipse(maxR * cos(rad), -maxR * sin(rad), 8, 8);
+  popMatrix();
+}
+
+// Telemetry & Info Panel
+void drawTelemetryHUD() {
+  textAlign(LEFT);
+  
+  // Main Panel Frame
+  fill(10, 16, 26, 220);
+  stroke(CYAN, 150);
+  strokeWeight(1.5);
+  rect(30, 30, 380, 150, 6);
+  
+  // Decorative Corner Brackets
+  stroke(CYAN, 255);
+  strokeWeight(2);
+  line(25, 25, 55, 25);
+  line(25, 25, 25, 55);
+  line(415, 25, 385, 25);
+  line(415, 25, 415, 55);
+  
+  fill(CYAN);
+  textSize(16);
+  text("// RADAR TELEMETRY SYSTEM", 50, 60);
+  
+  textSize(14);
+  fill(180, 220, 240);
+  text("SWEEP ANGLE : " + iAngle + "°", 50, 95);
+  
+  if (iDistance > 0 && iDistance < 40) {
+    fill(RED);
+    textSize(14);
+    text("TARGET DIST  : " + iDistance + " CM", 50, 125);
+    
+    fill(RED);
+    textSize(15);
+    text("SECTOR LOCK  : ACTIVE THREAT", 50, 155);
+  } else {
+    fill(GREEN);
+    textSize(14);
+    text("TARGET DIST  : OUT OF RANGE", 50, 125);
+    
+    fill(GREEN);
+    textSize(15);
+    text("SECTOR LOCK  : CLEAR", 50, 155);
+  }
+}
+
+// Warning Alert Box (Top Right)
+void drawThreatAlertBanner() {
+  pushMatrix();
+  translate(width - 340, 30);
+  
+  // Pulsing Background Color
+  float pulseAlpha = map(sin(frameCount * 0.2), -1, 1, 150, 240);
+  
+  fill(RED_ALERT);
+  stroke(RED, pulseAlpha);
+  strokeWeight(2);
+  rect(0, 0, 310, 80, 6);
+  
+  // Inner Warning Symbol
+  fill(255);
+  textAlign(LEFT);
+  textSize(18);
+  text("⚠️ WARNING: OBSTACLE DETECTED", 20, 35);
+  
+  textSize(13);
+  fill(255, 220, 220);
+  text("PROXIMITY LOCK AT " + iDistance + " CM (" + iAngle + "°)", 20, 60);
+  
+  popMatrix();
+}
