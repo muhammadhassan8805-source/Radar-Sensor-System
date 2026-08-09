@@ -2,6 +2,7 @@
 # 📡 Arduino Ultrasonic Radar System
 
 ![Platform](https://img.shields.io/badge/Platform-Arduino%20Uno-00979D?logo=arduino&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Processing%20Uno-00979D?logo=arduino&logoColor=white)
 ![Tool](https://img.shields.io/badge/Simulated%20on-cirkitdesigner-1497FE)
 ![Language](https://img.shields.io/badge/Language-C%2B%2B-blue)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
@@ -89,7 +90,7 @@ A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ult
 
 ### Step 4 - Open Processing
 1. Open the Processing IDE on your computer.
-2. Open the Radar_Visualization.pde sketch file.
+2. Open the Processing Code sketch file.
 3. Verify that the COM port in the code matches your Arduino's COM port (e.g., COM3 or ttyUSB0).
 4.Click the Run button (play icon) to launch the graphical radar interface and view real-time sweep data.
 
@@ -99,7 +100,7 @@ A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ult
 
 | Object Detected |
 |:---:|
-| ![With Object](RadarScreen.jpeg) |
+| ![With Object](Radar_Screen.jpeg) |
 | Object within threshold  |
 
 
