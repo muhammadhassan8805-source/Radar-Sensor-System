@@ -8,7 +8,7 @@
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
 
-A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ultrasonic sensor is mounted on a servo motor to sweep across a 180° field of view, measuring distance at each angle to detect nearby objects across its sweep path. Designed, wired, and simulated using Cricut Design Space (or your preferred designer layout).
+A servo-driven ultrasonic radar system built with an Arduino Uno. An HC-SR04 ultrasonic sensor is mounted on a servo motor to sweep across a 180° field of view, measuring distance at each angle to detect nearby objects across its sweep path. Designed, wired, and simulated using Cirkit Designer.
 
 ---
 
